@@ -28,10 +28,34 @@ class LoginController extends Controller
         * https://laravel-notification-channels.com/
         */
         // send one time passcode to user
-        
         $user->notify(new LoginVerify());
-        
 
         // return response
         return response()->json(["message" => "Login Code sent."]);
+    }
+
+    public function verify(Request $request)
+    {
+        //validate the incoming request
+        $request->validate([
+            'phone' => 'required|numeric|min:10',
+            'login_code' => 'required|numeric|between:11111,99999'
+        ]);
+
+        //find the user & check login code is authentic or not
+        $user = User::where('phone', $request->phone)
+                    ->where('login_code', $request->login_code)
+                    ->first();
+
+        //if yes, send authentication code
+        if ($user) {
+            $user->update([
+                'login_code' => null
+            ]);
+            return $user->createToken($request->login_code)->plainTextToken;
+        }
+
+        //otherwise return back with error message
+        return response()->json(["message" => "Invalid Login Code."], 401);
+    }
 }
