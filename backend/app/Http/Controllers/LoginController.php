@@ -53,7 +53,7 @@ class LoginController extends Controller
                 'login_code' => null
             ]);
             return $user->createToken($request->login_code)->plainTextToken;
-        }
+        };
 
         //otherwise return back with error message
         return response()->json(["message" => "Invalid Login Code."], 401);
