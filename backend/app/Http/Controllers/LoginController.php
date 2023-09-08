@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Notifications\LoginVerify;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -20,7 +21,7 @@ class LoginController extends Controller
         ]);
 
         if (!$user) {
-            return response()->json(['message', 'Could not process a user with that phone number.']);
+            return response()->json(['message', 'Could not process a user with that phone number.'], 401);
         }
         
         /*
@@ -28,7 +29,9 @@ class LoginController extends Controller
         */
         // send one time passcode to user
         
+        $user->notify(new LoginVerify());
+        
 
         // return response
-    }
+        return response()->json(["message" => "Login Code sent."]);
 }
