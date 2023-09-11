@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Driver::class);
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->nullable();
             $table->string('destination_name')->nullable();
             $table->boolean('is_started')->default(false);
             $table->boolean('is_completed')->default(false);

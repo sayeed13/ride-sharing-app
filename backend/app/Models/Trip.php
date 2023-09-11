@@ -11,6 +11,18 @@ class Trip extends Model
 
     protected $guarded = []; // For fillable all entry
 
+    //Use cast to recieve data before going to database
+    protected $cast = [
+        'origin' => 'array',
+        'destination' => 'array',
+        'driver_location' => 'array',
+        'origin' => 'array',
+        'is_started' => 'boolean',
+        'is_completed' => 'boolean',
+
+
+    ];
+
     public function driver()
     {
         return $this->belongsTo(Driver::class);
