@@ -23,7 +23,7 @@ class LoginController extends Controller
         if (!$user) {
             return response()->json(['message', 'Could not process a user with that phone number.'], 401);
         }
-        
+
         /*
         * https://laravel-notification-channels.com/
         */
