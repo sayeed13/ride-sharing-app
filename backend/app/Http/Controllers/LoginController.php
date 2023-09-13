@@ -28,10 +28,16 @@ class LoginController extends Controller
         * https://laravel-notification-channels.com/
         */
         // send one time passcode to user
-        $user->notify(new LoginVerify());
+        // $user->notify(new LoginVerify());
+
+        $loginCode = rand(11111, 99999);
+
+        $user->update([
+            'login_code' => $loginCode
+        ]);
 
         // return response
-        return response()->json(["message" => "Login Code sent."]);
+        return response()->json(["message" => "Your Login Code is {$loginCode}"]);
     }
 
     public function verify(Request $request)
