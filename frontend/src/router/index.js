@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import IndexView from '../views/IndexView.vue'
+import LocationView from '../views/LocationView.vue'
 import axios from 'axios'
 
 const router = createRouter({
@@ -15,7 +16,12 @@ const router = createRouter({
       path: '/index',
       name: 'index',
       component: IndexView
-    }
+    },
+    {
+      path: '/location',
+      name: 'location',
+      component: LocationView
+    },
   ]
 })
 

@@ -5,7 +5,7 @@
         <div class="p-5 bg-white rounded-md shadow-md">
             <div class="flex justify-between">
                 <button class="py-2 px-4 bg-black text-yellow-50 text-sm font-medium rounded-md">Start Driving</button>
-                <button class="py-2 px-4 bg-black text-yellow-50 text-sm font-medium rounded-md">Find a ride</button>
+                <button @click="handleRide" class="py-2 px-4 bg-black text-yellow-50 text-sm font-medium rounded-md">Find a ride</button>
             </div>
         </div>
     </div>
@@ -13,8 +13,14 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const handleRide = () => {
+    router.push({
+        name: 'location'
+    })
+}
 </script>
 
-<style>
-
-</style>
