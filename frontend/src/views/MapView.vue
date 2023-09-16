@@ -4,9 +4,9 @@
         <div class="p-5 bg-white rounded-md shadow-md"> 
             <h2 class="text-xl">Going to <strong>{{ location.destination.name }}</strong></h2>
             <div class="mt-2">
-                <GMapMap :zoom="11" :center="location.destination.geometry" style="width: 100%; height: 250px;"></GMapMap>
+                <GMapMap ref="gMap" v-if="location.destination.name !== ''" :zoom="11" :center="location.destination.geometry" style="width: 100%; height: 250px;"></GMapMap>
             </div>  
-            <button type="submit" class="mt-4 py-2 px-4 float-right bg-black text-yellow-50 text-sm font-medium rounded-md">Let's go!</button>
+            <button @click="confirmtrip" class="mt-4 py-2 px-4 float-right bg-black text-yellow-50 text-sm font-medium rounded-md">Let's go!</button>
         </div>
     </div>
 
@@ -14,11 +14,30 @@
 
 <script setup>
 import {useLocationStore} from '@/stores/location'
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios'
 
 const location = useLocationStore()
 const router = useRouter()
+
+const gMap = ref(null)
+
+const confirmtrip = () => {
+    axios.post('http://127.0.0.1:8000/api/trip', {
+        origin: location.currentLocation.geometry,
+        destination: location.destination.geometry,
+        destination_name: location.destination.name
+    })
+    .then((response) => {
+        router.push({
+            name: 'trip'
+        })
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
 
 onMounted(async() => {
 
@@ -30,13 +49,32 @@ onMounted(async() => {
     }
 
     // Get user current location
-    // navigator.geolocation.getCurrentPosition((success) => {
-    //     console.log(success)
-    // }, (error) => {
-    //     console.log(error)
-    // })
-
     await location.updateCurrentLocation()
+
+    // Draw a path on a map
+    gMap.value.$mapPromise.then((mapObject) => {
+        //User current location point
+        let currentPoint = new google.maps.LatLng(location.currentLocation.geometry),
+            destinationPoint = new google.maps.LatLng(location.destination.geometry),
+            directionsService = new google.maps.DirectionsService,
+            directionsDisplay =  new google.maps.DirectionsRenderer({
+                map: mapObject
+            })
+        
+        directionsService.route({
+            origin: currentPoint,
+            destination: destinationPoint,
+            avoidTolls: false,
+            avoidHighways: false,
+            travelMode: google.maps.TravelMode.DRIVING
+        }, (res, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(res)
+            } else {
+                console.error(status)
+            }
+        })
+    })
 
 
 })
