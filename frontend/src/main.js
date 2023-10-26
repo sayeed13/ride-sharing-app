@@ -15,7 +15,7 @@ app.use(createPinia())
 app.use(router)
 app.use(VueGoogleMaps, {
     load: {
-        key: "AIzaSyDX2A6vPF1wkldB6m1p2G96EjGni2C5FRM",
+        key: "",
         libraries: "places"
     }
 })
